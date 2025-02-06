@@ -1,10 +1,10 @@
 import pygame
-
+pygame.init()
 
 window = pygame.display.set_mode((700,500))
 fps = pygame.time.Clock()
 playerimg = pygame.image.load('player.png')
-playerimg = pygame.transform.scale(playerimg,(100,100))
+playerimg = pygame.transform.scale(playerimg,(10,100))
 ballimg = pygame.image.load('ball.png')
 ballimg = pygame.transform.scale(ballimg,(50,50))
 
@@ -42,9 +42,21 @@ class Ball(GameObject):
         if self.rect.right >= 700:
             self.speedx = -self.speedx
             self.rect.center = (350,250)
-        
+    def collision(self):
+        if self.rect.colliderect(player.rect):
+            self.speedx = -self.speedx
+        if self.rect.colliderect(player2.rect):
+            self.speedx = -self.speedx
+
+class SecondPlayer(GameObject):
+    def move(self):
+        if self.rect.centery < ball.rect.centery:
+            self.rect.y += self.speed
+        if self.rect.centery > ball.rect.centery:
+            self.rect.y -= self.speed          
 
 player = Player(100,250,playerimg)
+player2 = SecondPlayer(600,250,playerimg)
 ball = Ball(350,250,ballimg)
 
 canplay = True
@@ -60,5 +72,8 @@ while canplay == True:
     player.move()
     window.blit(ballimg,ball.rect)
     ball.move()
+    ball.collision()
+    window.blit(playerimg,player2.rect)
+    player2.move()
     pygame.display.update()
 
