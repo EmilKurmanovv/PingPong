@@ -9,12 +9,15 @@ ballimg = pygame.image.load('ball.png')
 ballimg = pygame.transform.scale(ballimg,(60,60))
 ball_sound = pygame.mixer.Sound('ballhitsound.wav')
 ball_sound.set_volume(0.1)
+font = pygame.font.SysFont('Arial',40)
+
 class GameObject():
     def __init__(self,x,y,img):
         self.rect = img.get_rect(center=((x,y)))
         self.speed = 3
         self.speedx = self.speed
         self.speedy = self.speed
+        self.score = 0
 class Player(GameObject):
     def move(self):
         if self.rect.y < 0:
@@ -38,17 +41,19 @@ class Ball(GameObject):
             self.speedy = -self.speedy
         if self.rect.left <= 0:
             self.speedx = -self.speedx
+            player2.score += 1
             self.rect.center = (350,250)
         if self.rect.right >= 700:
             self.speedx = -self.speedx
+            player.score += 1
             self.rect.center = (350,250)
         
     def collision(self):
         if self.rect.colliderect(player.rect):
-            self.speedx = -self.speedx
+            self.speedx = self.speed
             ball_sound.play()
         if self.rect.colliderect(player2.rect):
-            self.speedx = -self.speedx
+            self.speedx = -self.speed
             ball_sound.play()
 
 class SecondPlayer(GameObject):
@@ -79,5 +84,11 @@ while canplay == True:
     window.blit(playerimg,player2.rect)
     player2.move()
     
+    score_img1 = font.render(str(player.score),True,'black')
+    score_img2 = font.render(str(player2.score),True,'black')
+    window.blit(score_img1,(200,50))
+    window.blit(score_img2,(500,50))
+
+
     pygame.display.update()
 
